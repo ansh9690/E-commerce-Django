@@ -1,0 +1,36 @@
+{% extends 'home/base.html' %}
+{% block title %}Products Details{% endblock title %}
+{% block css %}{% endblock css %}
+{% load static %}
+{% block body %}
+<div class="container mt-5">
+    <h1>Product details page </h1><br>
+  <div class="row">
+    <div class="col-md-4">
+    <img src="/media/{{ object.image }}" class="card-img-top" alt="..." height="500px">
+
+    </div>
+    <div class="col-md-8">
+        <h3 class="card-title">{{ object.title }}</h3>
+        <p class="card-text">
+            {% if object.discount_price %}
+            <span class="mr-1">
+                <del>${{ object.price }}</del>
+            </span>
+            <span>${{ object.discount_price }}</span>
+            {% else %}
+           <span>${{ object.price }}</span>
+            {% endif %}
+          </p>
+        <p class="card-text">{{ object.description }}</p>
+        <span class="badge badge-pill badge-danger" style="background-color:{{ object.get_label_display }};">New</span><br><br>
+        <a href="{{ object.get_add_to_cart_url }}" class="btn btn-dark">Add Cart</a>
+       <a href="#" class="btn btn-primary">Buy now</a>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block custom_script %}
+
+{% endblock custom_script%}
