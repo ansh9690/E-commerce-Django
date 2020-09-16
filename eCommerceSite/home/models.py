@@ -2,17 +2,22 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
-
+from django_extensions.db.fields import AutoSlugField
 
 CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport wear'),
-    ('OW', 'Out wear')
+    ('E', 'earwear'),
+    ('L', 'laptop'),
+    ('C', 'clothes')
 )
 
 LABEL_CHOICES = (
     ('R', 'red'),
     ('G', 'green')
+)
+
+ADDRESS_CHOICES = (
+    ('B', 'billing'),
+    ('S', 'shipping')
 )
 
 
@@ -24,7 +29,8 @@ class Item(models.Model):
     description = models.TextField()
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
-    slug = models.SlugField()
+    slug = AutoSlugField(('slug'), max_length=50,
+                         unique=True, populate_from=('title',))
 
     def __str__(self):
         return self.title
@@ -73,14 +79,34 @@ class OrderItem(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
+    ref_code = models.CharField(max_length=20)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
     order_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey(
-        'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
+        'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+    shipping_address = models.ForeignKey(
+        'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     payment = models.ForeignKey(
         'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+
+    coupon = models.ForeignKey(
+        'CouponCode', on_delete=models.SET_NULL, blank=True, null=True)
+    being_delivered = models.BooleanField(default=False)
+    recieved = models.BooleanField(default=False)
+    refund_requested = models.BooleanField(default=False)
+    refund_granted = models.BooleanField(default=False)
+    '''
+    1.Item added to cart
+    2.Adding a billing address
+        (Failed checkout)
+    3.Payment
+        (Preprocessing, processing, packaging, etc.)
+    4.Being delivered
+    5.Recieved
+    6.Refund
+    '''
 
     def __str__(self):
         return f"ordered by {self.user.username}"
@@ -89,19 +115,29 @@ class Order(models.Model):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
+        if self.coupon:
+            total -= self.coupon.coupon_amount
         return total
 
 
-class BillingAddress(models.Model):
+class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    pin_code = models.CharField(max_length=100)
+    name = models.CharField(max_length=25)
+    mobile = models.CharField(max_length=10)
+    pin_code = models.CharField(max_length=20)
     address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
-    country = CountryField(multiple=False)
+    # country = CountryField(multiple=False)
+    state = models.CharField(max_length=2)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
+
+    class Meta:
+        verbose_name_plural = 'Addresses'
 
 
 class Payment(models.Model):
@@ -114,3 +150,21 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class CouponCode(models.Model):
+    code = models.CharField(max_length=20)
+    coupon_amount = models.FloatField()
+
+    def __str__(self):
+        return self.code
+
+
+class Refund(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    reason = models.TextField()
+    accepted = models.BooleanField(default=False)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.pk}"

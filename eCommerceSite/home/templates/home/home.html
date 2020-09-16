@@ -17,28 +17,26 @@
 <div class="container mt-5">
   <div class="row row-cols-1 row-cols-md-4 g-3">
     {% for item in object_list %}
-    <div class="col">
-      <div class="card h-100">
-        <img src="/media/{{ item.image }}" class="card-img-top" alt="..." height="300px">
-        <div class="card-body">
-          <h5 class="card-title">{{ item.get_category_display }}</h5>
-          <h5 class="card-title">{{ item.title }}</h5>
-          <p class="card-text">
-            {% if item.discount_price %}
-            ${{ item.discount_price }}
-            {% else %}
-            ${{ item.price }}
-            {% endif %}
-          </p>
-          <p class="card-text">{{ item.description }}</p>
-          <span class="badge badge-pill badge-danger" style="background-color:{{ item.get_label_display }};">New</span>
-        </div>
-         <div class="card-footer">
-           <a href="{{ item.get_absolute_url }}" class="btn btn-primary">View</a>
-           <button class="btn btn-dark cart">Add Cart</button>
+    <a href="{{ item.get_absolute_url }}" class="btn">
+      <div class="col">
+        <div class="card">
+          <img src="/media/{{ item.image }}" class="card-img-top" alt="..." height="250px">
+          <div class="card-body">
+            {% comment %} <h5 class="card-title">{{ item.get_category_display }}</h5> {% endcomment %}
+            <h6 class="card-title">{{ item.title|truncatechars:60 }}</h6>
+            <p class="card-text">
+              {% if item.discount_price %}
+              ₹{{ item.discount_price }}
+              {% else %}
+              ₹{{ item.price }}
+              {% endif %}
+            </p>
+            {% comment %} <p class="card-text">{{ item.description|truncatechars:50 }}</p> {% endcomment %}
+            <span class="badge badge-pill badge-danger" style="background-color:{{ item.get_label_display }};">New</span>
+          </div>
         </div>
       </div>
-    </div>
+    </a>
     {% endfor %}
   </div>
 </div>

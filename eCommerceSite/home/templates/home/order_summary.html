@@ -23,9 +23,9 @@
         <td>{{ order_item.item.title }}</td>
         <td>
         {% if order_item.item.discount_price %}
-            {{ order_item.item.discount_price }}
+            ₹{{ order_item.item.discount_price }}
         {% else %}
-            {{ order_item.item.price }}
+            ₹{{ order_item.item.price }}₹
         {% endif %}
         </td>
         <td><a href="{% url 'home:remove_single_item_from_cart' order_item.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
@@ -34,7 +34,7 @@
         </td>
         <td>{% if order_item.item.discount_price %}
             {{ order_item.get_total_discount_item_price }}
-            (<strong>Saving {{ order_item.get_amount_saved }}</strong>)
+            (<strong>Saving ₹{{ order_item.get_amount_saved }}</strong>)
         {% else %}
             {{ order_item.get_total_item_price }}
         {% endif %}
@@ -56,16 +56,22 @@
       {% if order.items.all %}
       <tr>
         <td colspan="4"><b>Total amount</b></td>
-        <td><b> ${{ order.get_total_amount }}</b></td>
+        <td><b> ₹{{ order.get_total_amount }}</b></td>
       </tr>
-       <tr>
+      <tr>
         <td colspan="5">
           <a href="{% url 'home:checkout' %}" class="btn btn-warning float-right ml-2">Proceed to checkout</a>
           <a href="/" class="btn btn-primary float-right ">Continue shopping</a>
         </td>
       </tr>
       {% endif %}
-    </tbody>
+
+     {% comment %} {% if object.coupon %}
+      <tr>
+          <td colspan="4"><b>Total amount</b></td>
+          <td>{{ object.coupon.code }}</td>
+      </tr>
+      {% endif %}  {% endcomment %}
   </table>
 </div>
 </div>

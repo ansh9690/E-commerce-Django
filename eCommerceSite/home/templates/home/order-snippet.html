@@ -1,0 +1,47 @@
+<h4 class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">Your cart</span>Total Items - {{ order.items.count }}
+</h4>
+<ul class="list-group mb-3">
+    {% for order in order.items.all %}
+    <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+            <h6 class="my-0">{{ order.quantity }} x {{ order.item.title}}</h6>
+        </div>
+        {% if order.item.discount_price %}
+        <span class="text-muted">₹{{ order.get_total_discount_item_price }}</span>
+        {% else %}
+        <span class="text-muted"> ₹{{ order.get_total_item_price }}</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+    {% if order.coupon %}
+    <li class="list-group-item d-flex justify-content-between bg-light">
+        <div class="text-success">
+            <h6 class="my-0">Promo code</h6>
+            <small>{{ order.coupon.code }}</small>
+        </div>
+        <div class="text-success">
+            <h6 class="my-0">-₹{{ order.coupon.coupon_amount }}</h6>
+            <h6>applied</h6>
+        </div>
+    </li>
+    {% endif %}
+    <li class="list-group-item d-flex justify-content-between">
+        <span>Total amount</span>
+        <strong>₹{{ order.get_total_amount }}</strong>
+    </li>
+</ul>
+
+{% if DISPLAY_COUPON_FORM %}
+<form class="card p-2" method='post' action='{% url 'home:add_coupon' %}'>
+{% csrf_token %}
+    <div class="input-group">
+        {{ couponform.code }}
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-secondary ml-1">Redeem</button>
+        </div>
+    </div>
+</form>
+{% endif %}
+
+

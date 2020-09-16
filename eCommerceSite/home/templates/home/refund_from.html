@@ -1,0 +1,15 @@
+{% extends 'home/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Refund Request{% endblock title %}
+{% block css %}{% endblock css %}
+{% load static %}
+{% block body %}
+<div class="container mt-5">
+    <h4>Refund request</h4>
+    <form method='post' action=".">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type='submit' class='btn btn-primary mt-3'>Submit</button>
+    </form>
+</div>
+{% endblock body %}
