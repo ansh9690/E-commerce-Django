@@ -1,6 +1,6 @@
 {% extends 'home/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Products Details{% endblock title %}
+{% block head_title %}Products Details{% endblock %}
 {% block css %}
 .container {
 max-width: 960px;
@@ -37,7 +37,7 @@ background-color: #fefde5 !important;
 
 {% endblock css %}
 {% load static %}
-{% block body %}
+{% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 order-md-1">
@@ -65,7 +65,7 @@ background-color: #fefde5 !important;
         </div>
     </div>
 </div>
-{% endblock body %}
+{% endblock %}
 {% block custom_script %}
 <script>
 

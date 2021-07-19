@@ -1,0 +1,33 @@
+{% extends 'home/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Sign In{% endblock title %}
+{% block css %}
+.toplogin {
+    margin-top:100px;
+    margin-bottom:60px;
+}
+{% endblock css %}
+{% block content %}
+<div class="container toplogin">
+    <div class="col-lg-4 mx-auto card rounded shadow-lg p-5 m-3 mt-5">
+        <h2 class="text-center mb-5">Sign In</h2>
+        <form method="post" action="{% url 'accounts:login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-outline mb-1">
+                <input type="text" id="id_username" name="username" class="form-control" required/>
+                <label class="form-label" for="id_username">Username</label>
+            </div>
+            <div class="form-outline mb-4">
+                <input type="password" id="id_password" name="password" class="form-control" required/>
+                <label class="form-label" for="id_password">Password</label>
+            </div>
+            <div class="d-grid gap-2 mt-2 mb-3">
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </div>
+        </form>
+    <div class="hint-text">Need an accounts? <a href="{% url 'accounts:register' %}" >Sign up here!</a></div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+.subscribe form .form-control {
+    margin-right: 10px;
+    height: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 30px;
+    border: none;
+    background: #fff;
+    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid #ccc;
+  }
+.subscribe form .btn {
+    border-radius: 30px;
+    background: #45637d;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-color: #45637d;
+}

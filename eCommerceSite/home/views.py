@@ -22,7 +22,7 @@ def create_ref_code():
 
 class HomeView(ListView):
     model = Item
-    paginate_by = 10
+    # paginate_by = 1
     template_name = "home/home.html"
 
 

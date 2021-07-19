@@ -1,0 +1,33 @@
+{% extends 'home/base.html' %}
+{% block title %}Sign Up{% endblock title %}
+{% block css %}
+.topsignup {
+    margin-top:70px;
+    margin-bottom:60px;
+}
+{% endblock css %}
+{% block content %}
+<div class="container topsignup">
+    <div class="col-lg-4 mx-auto card rounded shadow-lg p-5 m-3 mt-5">
+    <h2 class="text-center mb-5">Sign Up</h2>
+    <form method="post" action="{% url 'accounts:register' %}">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-outline">
+        <label class="form-label" for="{{ field.name }}">{{ field.label_tag }}</label>
+            {{ field }}
+            
+        </div>
+        
+        {% for error in field.errors %}
+        <p style="color:red;">{{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+        <div class="d-grid gap-2 mt-3">
+        <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+        </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}
